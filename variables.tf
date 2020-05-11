@@ -489,6 +489,37 @@ EOF
 
 }
 
+variable "vault_instance_enable_secure_boot" {
+  type    = bool
+  default = false
+
+  description = <<EOF
+Verify the digital signature of all boot components, and halt the boot process
+if signature verification fails. Defaults to false.
+EOF
+}
+
+variable "vault_instance_enable_vtpm" {
+  type    = bool
+  default = false
+
+  description = <<EOF
+Use a virtualized trusted platform module, which is a specialized computer chip
+you can use to encrypt objects like keys and certificates. Defaults to false.
+EOF
+}
+
+variable "vault_instance_enable_integrity_monitoring" {
+  type    = bool
+  default = false
+
+  description = <<EOF
+Compare the most recent boot measurements to the integrity policy baseline and
+return a pair of pass/fail results depending on whether they match or not.
+Defaults to true.
+EOF
+}
+
 variable "vault_log_level" {
   type    = string
   default = "warn"

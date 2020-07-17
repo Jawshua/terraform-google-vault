@@ -51,6 +51,7 @@ useradd -d /etc/vault.d -s /bin/false vault
 
 # Vault config
 mkdir -p /etc/vault.d
+mkdir /etc/vault.d/plugins
 cat <<"EOF" > /etc/vault.d/config.hcl
 ${config}
 EOF
@@ -75,8 +76,6 @@ gsutil cp "gs://${vault_tls_bucket}/${vault_tls_key_filename}" /etc/vault.d/tls/
 # Decrypt the Vault private key
 base64 --decode < /etc/vault.d/tls/vault.key.enc | gcloud kms decrypt \
   --project="${kms_project}" \
-  --location="${kms_location}" \
-  --keyring="${kms_keyring}" \
   --key="${kms_crypto_key}" \
   --plaintext-file=/etc/vault.d/tls/vault.key \
   --ciphertext-file=-
@@ -92,6 +91,10 @@ mkdir -p /var/log/vault
 touch /var/log/vault/{audit,server}.log
 chmod 0640 /var/log/vault/{audit,server}.log
 chown -R vault:adm /var/log/vault
+
+# Add the TLS ca.crt to the trusted store so plugins dont error with TLS handshakes
+cp /etc/vault.d/tls/ca.crt /usr/local/share/ca-certificates/
+update-ca-certificates
 
 # Systemd service
 cat <<"EOF" > /etc/systemd/system/vault.service
@@ -276,6 +279,12 @@ EOF
 curl -sSfLo /opt/stackdriver/collectd/etc/collectd.d/statsd.conf https://raw.githubusercontent.com/Stackdriver/stackdriver-agent-service-configs/master/etc/collectd.d/statsd.conf
 systemctl enable stackdriver-agent
 systemctl restart stackdriver-agent
+
+#########################################
+##          user_startup_script        ##
+#########################################
+${user_startup_script}
+
 
 # Signal this script has run
 touch ~/.startup-script-complete

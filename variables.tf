@@ -378,6 +378,11 @@ variable "tls_cn" {
   default     = "vault.example.net"
 }
 
+variable "domain" {
+  description = "The domain name that will be set in the api_addr. Load Balancer IP used by default"
+  type        = string
+  default     = ""
+}
 variable "tls_dns_names" {
   description = "List of DNS names added to the Vault server self-signed certificate"
   type        = list(string)
@@ -619,6 +624,29 @@ EOF
 
 }
 
+variable "vault_tls_kms_key" {
+  type    = string
+  default = ""
+
+  description = <<EOF
+Fully qualified name of the KMS key, for example,
+vault_tls_kms_key = "projects/PROJECT_ID/locations/LOCATION/keyRings/KEYRING/cryptoKeys/KEY_NAME"
+This key should have been used to encrypt the TLS private key if Terraform is
+not managing TLS. The Vault service account will be granted access to the KMS Decrypter
+role once it is created so it can pull from this the `vault_tls_bucket` at boot time. This
+option is required when `manage_tls` is set to false.
+EOF
+}
+
+variable "vault_tls_kms_key_project" {
+  type    = string
+  default = ""
+
+  description = <<EOF
+Project ID where the KMS key is stored. By default, same as `project_id`
+EOF
+}
+
 variable "vault_tls_cert_filename" {
   type    = string
   default = "vault.crt"
@@ -658,4 +686,13 @@ Version of vault to install. This version must be 1.0+ and must be published on
 the HashiCorp releases service.
 EOF
 
+}
+
+variable "user_startup_script" {
+  type = string
+  default = ""
+
+  description = <<EOF
+Additional user-provided code injected after Vault is setup
+EOF
 }

@@ -186,4 +186,3 @@ resource "google_compute_firewall" "allow-ssh" {
 
   depends_on = [google_project_service.service]
 }
-

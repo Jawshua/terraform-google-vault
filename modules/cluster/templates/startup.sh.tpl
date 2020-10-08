@@ -24,8 +24,17 @@ apt-get upgrade -yqq
 apt-get install -yqq jq libcap2-bin logrotate unzip
 
 # Install Stackdriver for logging and monitoring
-curl -sSfL https://dl.google.com/cloudagents/install-logging-agent.sh | bash
-curl -sSfL https://dl.google.com/cloudagents/install-monitoring-agent.sh | bash
+curl -sSfL https://dl.google.com/cloudagents/add-logging-agent-repo.sh | bash
+curl -sSfL https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh | bash
+
+apt-get update -yqq
+apt-get install -yqq 'stackdriver-agent=6.*' 'google-fluentd=1.*' google-fluentd-catch-all-config-structured
+
+systemctl enable stackdriver-agent
+systemctl start stackdriver-agent
+
+systemctl enable google-fluentd
+systemctl start google-fluentd
 
 # Download and install Vault
 cd /tmp && \

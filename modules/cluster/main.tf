@@ -59,6 +59,12 @@ resource "google_compute_instance_template" "vault" {
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 
+  shielded_instance_config {
+    enable_secure_boot          = var.vault_instance_enable_secure_boot
+    enable_vtpm                 = var.vault_instance_enable_vtpm
+    enable_integrity_monitoring = var.vault_instance_enable_integrity_monitoring
+  }
+
   metadata = merge(
     var.vault_instance_metadata,
     {

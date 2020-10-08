@@ -72,6 +72,9 @@ module "cluster" {
   vault_instance_metadata                      = var.vault_instance_metadata
   vault_instance_base_image                    = var.vault_instance_base_image
   vault_instance_tags                          = var.vault_instance_tags
+  vault_instance_enable_secure_boot            = var.vault_instance_enable_secure_boot
+  vault_instance_enable_vtpm                   = var.vault_instance_enable_vtpm
+  vault_instance_enable_integrity_monitoring   = var.vault_instance_enable_integrity_monitoring
   vault_log_level                              = var.vault_log_level
   vault_min_num_servers                        = var.vault_min_num_servers
   vault_machine_type                           = var.vault_machine_type
